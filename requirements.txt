@@ -1,0 +1,8 @@
+streamlit>=1.38
+streamlit-option-menu>=0.3.13
+streamlit-extras>=0.4.3
+plotly>=5.22
+altair>=5.3
+pandas>=2.2
+matplotlib>=3.9
+seaborn>=0.13

@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual Environment
+venv/
+.env
+
+# VS Code
+.vscode/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Model Weights
+models/*.pth
+models/*.pt
+models/*.ckpt
+
+# Dataset
+processed_data_subset/
+*.zip
+
+# Temporary Files
+temp/
+*.tmp
+
+# Output Files
+outputs/blockchain/*.json
+outputs/history.db
+
+# Reports
+reports/*.pdf
+
+# GradCAM Output
+*.jpg
+*.png
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+Thumbs.db
+.DS_Store
