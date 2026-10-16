@@ -18,6 +18,7 @@ from pytorch_grad_cam.utils.image import (
 from src.deepfake_detection.model import (
     build_model,
     DEVICE,
+    MODEL_PATH,
 )
 
 from src.deepfake_detection.transforms import (
@@ -28,12 +29,13 @@ from src.deepfake_detection.transforms import (
 # Load trained model
 # -----------------------------------
 
-model = build_model()
+model = build_model(pretrained=False)
 
 model.load_state_dict(
     torch.load(
-        "models/deepfake_detector.pth",
+        MODEL_PATH,
         map_location=DEVICE,
+        weights_only=True,
     )
 )
 
@@ -63,6 +65,14 @@ def generate_gradcam(image_path, output_path="gradcam_result.jpg"):
         input_tensor=input_tensor
     )[0]
 
+    # The CAM is 224x224 (model input size) but rgb_image is the original
+    # resolution. show_cam_on_image needs identical shapes, so resize the
+    # CAM up to the original image. cv2.resize takes (width, height).
+    grayscale_cam = cv2.resize(
+        grayscale_cam,
+        (rgb_image.shape[1], rgb_image.shape[0]),
+    )
+
     visualization = show_cam_on_image(
         rgb_image,
         grayscale_cam,
@@ -84,3 +94,5 @@ def generate_gradcam(image_path, output_path="gradcam_result.jpg"):
     print("Grad-CAM saved as:")
 
     print(output_path)
+
+    return output_path

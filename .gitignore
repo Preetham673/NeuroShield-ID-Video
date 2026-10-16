@@ -1,45 +1,72 @@
-# Python
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Python cache
 __pycache__/
 *.py[cod]
-*.pyo
 
-# Virtual Environment
-venv/
+# Environment variables / secrets
 .env
+.env.*
+!.env.example
 
-# VS Code
+# IDE
 .vscode/
+.idea/
 
 # Streamlit
 .streamlit/secrets.toml
 
-# Model Weights
-models/*.pth
-models/*.pt
-models/*.ckpt
-
-# Dataset
-processed_data_subset/
-*.zip
-
-# Temporary Files
-temp/
-*.tmp
-
-# Output Files
-outputs/blockchain/*.json
-outputs/history.db
-
-# Reports
-reports/*.pdf
-
-# GradCAM Output
-*.jpg
-*.png
-
 # Jupyter
 .ipynb_checkpoints/
 
-# OS
-Thumbs.db
+# Logs
+*.log
+
+# OS files
 .DS_Store
+Thumbs.db
+
+# Large datasets
+data/
+datasets/
+*.zip
+*.rar
+*.7z
+
+# Model files
+*.pt
+*.pth
+*.h5
+*.keras
+*.onnx
+
+# Temporary files
+tmp/
+temp/
+# Python environment and cache
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Datasets and model weights
+datasets/
+checkpoints/
+*.pth
+*.pt
+*.h5
+*.onnx
+
+# Generated output
+outputs/
+reports/
+*.log

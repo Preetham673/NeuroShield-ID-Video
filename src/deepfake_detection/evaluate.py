@@ -20,6 +20,7 @@ from sklearn.metrics import (
 from src.deepfake_detection.model import (
     build_model,
     DEVICE,
+    MODEL_PATH,
 )
 
 from src.deepfake_detection.dataloader import (
@@ -39,12 +40,13 @@ def evaluate_model(show_output=True):
     # Load Model
     # ---------------------------------
 
-    model = build_model()
+    model = build_model(pretrained=False)
 
     model.load_state_dict(
         torch.load(
-            "models/deepfake_detector.pth",
-            map_location=DEVICE
+            MODEL_PATH,
+            map_location=DEVICE,
+            weights_only=True,
         )
     )
 
@@ -57,9 +59,13 @@ def evaluate_model(show_output=True):
 
     true_labels = []
     predicted_labels = []
+    probabilities = []
 
     start_time = time.time()
 
+    # One pass over the test set collects predictions AND probabilities.
+    # The old code looped over the whole test set twice (again for the
+    # ROC probabilities), doubling the wait on the Streamlit pages.
     with torch.no_grad():
 
         for images, labels in test_loader:
@@ -68,13 +74,15 @@ def evaluate_model(show_output=True):
 
             outputs = model(images)
 
-            _, predicted = torch.max(outputs, 1)
+            probs = torch.softmax(outputs, dim=1)
+
+            predicted = probs.argmax(dim=1)
 
             true_labels.extend(labels.numpy())
 
-            predicted_labels.extend(
-                predicted.cpu().numpy()
-            )
+            predicted_labels.extend(predicted.cpu().numpy())
+
+            probabilities.extend(probs[:, 1].cpu().numpy())
 
     end_time = time.time()
 
@@ -109,24 +117,6 @@ def evaluate_model(show_output=True):
 
 
     # ROC Curve
-
-    probabilities = []
-
-    model.eval()
-
-    with torch.no_grad():
-
-        for images, labels in test_loader:
-
-           images = images.to(DEVICE)
-
-           outputs = model(images)
-
-           probs = torch.softmax(outputs, dim=1)
-
-           probabilities.extend(
-            probs[:,1].cpu().numpy()
-        )
 
     fpr, tpr, _ = roc_curve(
     true_labels,
@@ -170,6 +160,8 @@ def evaluate_model(show_output=True):
         "tpr": tpr,
 
         "roc_auc": roc_auc,
+
+        "num_samples": len(true_labels),
 
     }
 

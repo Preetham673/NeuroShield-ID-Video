@@ -1,5 +1,5 @@
-from transforms import train_transform
-from transforms import test_transform
+from src.deepfake_detection.transforms import train_transform
+from src.deepfake_detection.transforms import test_transform
 
 print("Training Transform\n")
 print(train_transform)

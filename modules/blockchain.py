@@ -13,6 +13,10 @@ def render():
     blockchain = PersistentBlockchain()
     chain = blockchain.chain
 
+    if not chain:
+        st.info("No blocks recorded yet. Run a verification to create the genesis block.")
+        return
+
     c1, c2, c3 = st.columns(3)
     with c1:
         stat_card("🧱", "Total Blocks", str(len(chain)), 1)

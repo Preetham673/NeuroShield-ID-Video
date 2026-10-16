@@ -6,6 +6,7 @@ Generate PDF Verification Report
 
 from pathlib import Path
 from datetime import datetime
+import uuid
 
 from reportlab.platypus import (
     SimpleDocTemplate,
@@ -20,7 +21,14 @@ REPORT_DIR.mkdir(exist_ok=True)
 
 def generate_pdf(result):
 
-    pdf_path = REPORT_DIR / "verification_report.pdf"
+    # Unique, timestamped name. The old fixed name overwrote the previous
+    # report every time, so the Reports page could only ever show one file
+    # and concurrent users clobbered each other's report.
+    REPORT_DIR.mkdir(exist_ok=True)
+
+    stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    pdf_path = REPORT_DIR / f"verification_report_{stamp}_{uuid.uuid4().hex[:6]}.pdf"
 
     styles = getSampleStyleSheet()
 
@@ -57,6 +65,22 @@ def generate_pdf(result):
             styles["BodyText"]
         )
     )
+
+    if result.get("is_video"):
+
+        story.append(
+            Paragraph(
+                f"Input: Video ({result['deepfake'].get('total_frames_analyzed', 0)} frames analyzed)",
+                styles["BodyText"]
+            )
+        )
+
+        story.append(
+            Paragraph(
+                f"Average FAKE Probability: {result['deepfake'].get('avg_fake_probability', 0.0):.2f}%",
+                styles["BodyText"]
+            )
+        )
 
     story.append(Spacer(1, 15))
 
@@ -125,7 +149,10 @@ def generate_pdf(result):
 
     story.append(
         Paragraph(
-            result["blockchain"]["proof_hash"],
+            # proof_hash is None whenever nothing was stored on the chain
+            # (policy failed). Paragraph(None) raised a TypeError, so the
+            # report failed for every non-trusted verification.
+            result["blockchain"]["proof_hash"] or "Not stored (policy not passed)",
             styles["Code"]
         )
     )

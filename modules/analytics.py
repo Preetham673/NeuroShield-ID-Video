@@ -7,7 +7,7 @@ from src.deepfake_detection.evaluate import evaluate_model
 from components.ui import page_header, section_divider, stat_card, skeleton
 
 PLOT_TEMPLATE = "plotly_dark"
-BRAND_COLORS = ["#3b82f6", "#7c3aed", "#06b6d4", "#22c55e", "#f59e0b"]
+BRAND_COLORS = ["#00E676", "#00FF88", "#00A854", "#22C55E", "#FFB020"]
 
 
 @st.cache_data
@@ -20,7 +20,7 @@ def _style_fig(fig):
         template=PLOT_TEMPLATE,
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(family="Inter", color="#9aa7bd"),
+        font=dict(family="Inter", color="#CBD5E1"),
         margin=dict(l=10, r=10, t=40, b=10),
         legend=dict(bgcolor="rgba(0,0,0,0)"),
     )
@@ -68,7 +68,7 @@ def render():
                 labels=["REAL", "FAKE"],
                 values=[real_predictions, fake_predictions],
                 hole=0.55,
-                marker=dict(colors=[BRAND_COLORS[0], BRAND_COLORS[1]]),
+                marker=dict(colors=["#00E676", "#FF4D5A"]),
             )]
         )
         st.plotly_chart(_style_fig(fig), use_container_width=True)
@@ -82,8 +82,15 @@ def render():
             result["recall"] * 100,
             result["f1"] * 100,
         ]
+        perf_colors = ["#00E676", "#00D2FF", "#3B82F6", "#FFB020"]
         fig = go.Figure(
-            data=[go.Bar(x=labels, y=metrics, marker_color=BRAND_COLORS, text=[f"{v:.2f}%" for v in metrics], textposition="outside")]
+            data=[go.Bar(
+                x=labels,
+                y=metrics,
+                marker_color=perf_colors,
+                text=[f"{v:.2f}%" for v in metrics],
+                textposition="outside"
+            )]
         )
         fig.update_yaxes(range=[0, 100])
         st.plotly_chart(_style_fig(fig), use_container_width=True)
@@ -101,8 +108,13 @@ def render():
     with col3:
         st.markdown("#### Score Trend")
         fig = go.Figure(
-            data=[go.Scatter(x=trend_df["Metric"], y=trend_df["Score"], mode="lines+markers",
-                              line=dict(color=BRAND_COLORS[2], width=3), marker=dict(size=9))]
+            data=[go.Scatter(
+                x=trend_df["Metric"],
+                y=trend_df["Score"],
+                mode="lines+markers",
+                line=dict(color="#00D2FF", width=3),
+                marker=dict(size=9, color="#00E676")
+            )]
         )
         fig.update_yaxes(range=[0, 100])
         st.plotly_chart(_style_fig(fig), use_container_width=True)
@@ -110,8 +122,14 @@ def render():
     with col4:
         st.markdown("#### Cumulative Confidence Area")
         fig = go.Figure(
-            data=[go.Scatter(x=trend_df["Metric"], y=trend_df["Score"], fill="tozeroy",
-                              mode="lines", line=dict(color=BRAND_COLORS[3]))]
+            data=[go.Scatter(
+                x=trend_df["Metric"],
+                y=trend_df["Score"],
+                fill="tozeroy",
+                mode="lines",
+                line=dict(color="#00E676", width=2),
+                fillcolor="rgba(0, 230, 118, 0.18)"
+            )]
         )
         fig.update_yaxes(range=[0, 100])
         st.plotly_chart(_style_fig(fig), use_container_width=True)
@@ -126,7 +144,7 @@ def render():
 
         **Dataset:** Processed Data Subset
 
-        **Test Images:** 10,000
+        **Test Images:** {result['num_samples']:,}
 
         **Inference Time:** {result['inference_time']:.2f} seconds
 

@@ -3,13 +3,10 @@ from pathlib import Path
 
 from src.blockchain.persistent_blockchain import PersistentBlockchain
 
-PROJECT_DIR = Path(
-    r"C:\Users\HP\OneDrive\Desktop\NeuroShield-ID"
-)
+# <root>/src/blockchain/store_proof.py -> <root>
+PROJECT_DIR = Path(__file__).resolve().parents[2]
 
 CIRCUITS = PROJECT_DIR / "circuits"
-
-blockchain = PersistentBlockchain()
 
 
 def store_proof():
@@ -21,6 +18,10 @@ def store_proof():
         proof_hash = hashlib.sha256(
             f.read()
         ).hexdigest()
+
+    # Created per call (not at import) so it always starts from the
+    # chain currently on disk instead of a stale import-time copy.
+    blockchain = PersistentBlockchain()
 
     blockchain.add_block(proof_hash)
 

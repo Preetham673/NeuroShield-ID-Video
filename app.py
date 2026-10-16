@@ -34,11 +34,11 @@ inject_css()
 with st.sidebar:
     st.markdown(
         """
-        <div style="display:flex;align-items:center;gap:10px;padding:6px 4px 18px 4px;">
-            <div style="font-size:1.7rem;">🛡️</div>
+        <div style="display:flex;align-items:center;gap:12px;padding:8px 4px 20px 4px;">
+            <div style="width:38px;height:38px;border-radius:10px;background:rgba(0,230,118,0.12);border:1px solid rgba(0,230,118,0.35);box-shadow:0 0 12px rgba(0,230,118,0.20);display:flex;align-items:center;justify-content:center;font-size:1.35rem;color:#00E676;">🛡️</div>
             <div>
-                <div style="font-weight:800;font-size:1.05rem;color:var(--text-hi);line-height:1.1;">NeuroShield-ID</div>
-                <div style="font-size:.72rem;color:var(--text-lo);letter-spacing:.04em;">ENTERPRISE SECURITY</div>
+                <div style="font-weight:800;font-size:1.1rem;color:#F8FAFC;line-height:1.15;letter-spacing:-0.02em;">NeuroShield-ID</div>
+                <div style="font-size:.72rem;color:#6B7280;font-weight:600;letter-spacing:.05em;">ENTERPRISE SECURITY</div>
             </div>
         </div>
         """,
@@ -78,13 +78,14 @@ with st.sidebar:
                 "margin": "3px 0",
                 "border-radius": "10px",
                 "padding": "10px 14px",
-                "color": "#9aa7bd",
+                "color": "#CBD5E1",
             },
             "nav-link-selected": {
-                "background": "linear-gradient(135deg, rgba(79,125,255,0.55), rgba(168,85,247,0.5))",
-                "color": "#f5f7ff",
+                "background-color": "rgba(0, 230, 118, 0.14)",
+                "color": "#00E676",
                 "font-weight": "600",
-                "box-shadow": "0 0 0 1px rgba(168,85,247,0.4)",
+                "border-left": "3px solid #00E676",
+                "box-shadow": "none",
             },
         },
     )

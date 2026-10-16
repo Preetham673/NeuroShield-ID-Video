@@ -9,11 +9,11 @@ template TrustScoreVerifier() {
 
     component lt = LessThan(8);
 
-    // Compare trustScore < 85
+    // Compare trustScore < 75
     lt.in[0] <== trustScore;
-    lt.in[1] <== 85;
+    lt.in[1] <== 75;
 
-    // If trustScore < 85 -> lt.out = 1
+    // If trustScore < 75 -> lt.out = 1
     // Therefore valid = 1 - lt.out
     valid <== 1 - lt.out;
 }

@@ -13,11 +13,20 @@ from src.deepfake_detection.transforms import (
     test_transform,
 )
 
-TRAIN_PATH = r"D:\NeuroShield_Research\processed_data_subset\train"
+import os
 
-VALIDATION_PATH = r"D:\NeuroShield_Research\processed_data_subset\validation"
+# Set NEUROSHIELD_DATA_ROOT to move the dataset without editing code;
+# falls back to the original location.
+DATA_ROOT = os.environ.get(
+    "NEUROSHIELD_DATA_ROOT",
+    r"D:\NeuroShield_Research\processed_data_subset",
+)
 
-TEST_PATH = r"D:\NeuroShield_Research\processed_data_subset\test"
+TRAIN_PATH = os.path.join(DATA_ROOT, "train")
+
+VALIDATION_PATH = os.path.join(DATA_ROOT, "validation")
+
+TEST_PATH = os.path.join(DATA_ROOT, "test")
 
 # ==========================================
 # Train Loader

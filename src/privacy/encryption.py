@@ -1,7 +1,10 @@
 """
 encryption.py
 
-AES-256 Encryption using Fernet
+Symmetric encryption using Fernet.
+
+Note: Fernet is AES-128-CBC with HMAC-SHA256 authentication, NOT AES-256.
+Describe it that way in reports/papers.
 """
 
 from cryptography.fernet import Fernet
@@ -9,7 +12,7 @@ from cryptography.fernet import Fernet
 
 def generate_key():
     """
-    Generate AES encryption key.
+    Generate a Fernet key (AES-128-CBC + HMAC-SHA256).
     """
     return Fernet.generate_key()
 

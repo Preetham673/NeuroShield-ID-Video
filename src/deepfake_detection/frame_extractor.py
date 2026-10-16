@@ -51,7 +51,10 @@ def extract_frames(video_path, output_folder, label):
 
             save_path = output_folder / filename
 
-            cv2.imwrite(str(save_path), frame)
+            # cv2.imwrite fails silently (returns False) if the folder is
+            # missing, so check it instead of pretending frames were saved.
+            if not cv2.imwrite(str(save_path), frame):
+                raise IOError(f"Could not write frame to {save_path}")
 
             saved_count += 1
 
@@ -66,6 +69,9 @@ def extract_frames(video_path, output_folder, label):
 # =====================================================
 
 def main():
+
+    REAL_OUTPUT.mkdir(parents=True, exist_ok=True)
+    FAKE_OUTPUT.mkdir(parents=True, exist_ok=True)
 
     real_videos = list(REAL_VIDEO_DIR.glob("*.mp4"))
     fake_videos = list(FAKE_VIDEO_DIR.glob("*.mp4"))

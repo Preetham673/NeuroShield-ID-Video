@@ -7,17 +7,16 @@ from a Trust Score.
 
 import json
 import subprocess
-from pathlib import Path
 
-
-PROJECT_DIR = Path(
-    r"C:\Users\HP\OneDrive\Desktop\NeuroShield-ID"
-)
-
-CIRCUITS = PROJECT_DIR / "circuits"
+from src.zkp.circuit_env import CIRCUITS, run_in_circuits
 
 
 def generate_proof(trust_score):
+
+    # Remove leftovers so a failed run can never leave an old proof
+    # behind to be verified/stored as if it were fresh.
+    for name in ("proof.json", "public.json", "witness.wtns"):
+        (CIRCUITS / name).unlink(missing_ok=True)
 
     # -----------------------------------
     # Create input.json automatically
@@ -43,25 +42,26 @@ def generate_proof(trust_score):
     # -----------------------------------
 
     command = (
-        'wsl bash -c '
-        '"cd /mnt/c/Users/HP/OneDrive/Desktop/NeuroShield-ID/circuits && '
-        'node trust_score_js/generate_witness.js '
-        'trust_score_js/trust_score.wasm '
-        'input.json '
-        'witness.wtns && '
-        'snarkjs groth16 prove '
-        'trust_score_final.zkey '
-        'witness.wtns '
-        'proof.json '
-        'public.json"'
+        "node trust_score_js/generate_witness.js "
+        "trust_score_js/trust_score.wasm "
+        "input.json "
+        "witness.wtns && "
+        "snarkjs groth16 prove "
+        "trust_score_final.zkey "
+        "witness.wtns "
+        "proof.json "
+        "public.json"
     )
 
-    result = subprocess.run(
-        command,
-        shell=True,
-        capture_output=True,
-        text=True
-    )
+    try:
+
+        result = run_in_circuits(command)
+
+    except (subprocess.TimeoutExpired, OSError) as e:
+
+        print(f"Proof generation could not run: {e}")
+
+        return False
 
     if result.returncode != 0:
 

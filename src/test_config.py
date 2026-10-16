@@ -1,4 +1,4 @@
-from config import *
+from src.config import *
 
 print("PROJECT ROOT")
 print(PROJECT_ROOT)

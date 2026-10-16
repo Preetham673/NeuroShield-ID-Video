@@ -6,6 +6,14 @@ for NeuroShield-ID
 """
 
 
+from src.config import (
+    TRUST_THRESHOLD,
+    SUSPICIOUS_THRESHOLD,
+    DEEPFAKE_WEIGHT,
+    FACE_WEIGHT,
+)
+
+
 def calculate_trust_score(
     deepfake_confidence,
     similarity_score
@@ -16,22 +24,23 @@ def calculate_trust_score(
     Parameters
     ----------
     deepfake_confidence : float
-        Confidence that image is REAL (0-100)
+        Probability that the image is REAL (0-100). NOT the confidence of
+        the predicted class; see _real_probability() in pipeline.py.
 
     similarity_score : float
         Face verification similarity (0-100)
     """
 
     trust_score = (
-        0.6 * deepfake_confidence +
-        0.4 * similarity_score
+        DEEPFAKE_WEIGHT * deepfake_confidence +
+        FACE_WEIGHT * similarity_score
     )
 
-    if trust_score >= 85:
+    if trust_score >= TRUST_THRESHOLD:
 
         status = "TRUSTED"
 
-    elif trust_score >= 60:
+    elif trust_score >= SUSPICIOUS_THRESHOLD:
 
         status = "SUSPICIOUS"
 

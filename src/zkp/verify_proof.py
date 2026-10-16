@@ -7,54 +7,60 @@ check policy result.
 
 import json
 import subprocess
-from pathlib import Path
 
-PROJECT_DIR = Path(
-    r"C:\Users\HP\OneDrive\Desktop\NeuroShield-ID"
-)
+from src.zkp.circuit_env import CIRCUITS, run_in_circuits
 
-CIRCUITS = PROJECT_DIR / "circuits"
+_FAILED = {
+    "proof_verified": False,
+    "policy_passed": False
+}
 
 
 def verify_proof():
 
     command = (
-        'wsl bash -c '
-        '"cd /mnt/c/Users/HP/OneDrive/Desktop/NeuroShield-ID/circuits && '
-        'snarkjs groth16 verify '
-        'verification_key.json '
-        'public.json '
-        'proof.json"'
+        "snarkjs groth16 verify "
+        "verification_key.json "
+        "public.json "
+        "proof.json"
     )
 
-    result = subprocess.run(
-        command,
-        shell=True,
-        capture_output=True,
-        text=True
-    )
+    try:
+
+        result = run_in_circuits(command)
+
+    except (subprocess.TimeoutExpired, OSError) as e:
+
+        print(f"Proof verification could not run: {e}")
+
+        return dict(_FAILED)
 
     if "OK!" not in result.stdout:
 
         print(result.stderr)
 
-        return {
-            "proof_verified": False,
-            "policy_passed": False
-        }
+        return dict(_FAILED)
 
     # -----------------------------
     # Read circuit output
     # -----------------------------
 
-    with open(
-        CIRCUITS / "public.json",
-        "r"
-    ) as f:
+    try:
 
-        public_output = json.load(f)
+        with open(
+            CIRCUITS / "public.json",
+            "r"
+        ) as f:
 
-    valid = int(public_output[0])
+            public_output = json.load(f)
+
+        valid = int(public_output[0])
+
+    except (OSError, ValueError, IndexError, TypeError) as e:
+
+        print(f"Could not read circuit output: {e}")
+
+        return dict(_FAILED)
 
     return {
 

@@ -19,7 +19,7 @@ def _style_fig(fig):
         template=PLOT_TEMPLATE,
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(family="Inter", color="#9aa7bd"),
+        font=dict(family="Inter", color="#CBD5E1"),
         margin=dict(l=10, r=10, t=40, b=10),
     )
     return fig
@@ -65,7 +65,7 @@ def render():
                 z=cm,
                 x=["REAL", "FAKE"],
                 y=["REAL", "FAKE"],
-                colorscale="Blues",
+                colorscale="Greens",
                 text=cm,
                 texttemplate="%{text}",
                 showscale=False,
@@ -80,11 +80,11 @@ def render():
         fig.add_trace(go.Scatter(
             x=result["fpr"], y=result["tpr"], mode="lines",
             name=f"AUC = {result['roc_auc']:.4f}",
-            line=dict(color="#3b82f6", width=3),
+            line=dict(color="#00E676", width=3),
         ))
         fig.add_trace(go.Scatter(
             x=[0, 1], y=[0, 1], mode="lines",
-            line=dict(color="#5f6b81", dash="dash"), showlegend=False,
+            line=dict(color="#64748B", dash="dash"), showlegend=False,
         ))
         fig.update_xaxes(title="False Positive Rate")
         fig.update_yaxes(title="True Positive Rate")
@@ -116,7 +116,7 @@ def render():
         st.markdown("#### Dataset Information")
         st.info(
             f"""
-            **Test Set Size:** 10,000 images
+            **Test Set Size:** {result['num_samples']:,} images
 
             **Inference Time:** {result['inference_time']:.2f} seconds
 
